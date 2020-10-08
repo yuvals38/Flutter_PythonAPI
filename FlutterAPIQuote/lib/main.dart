@@ -21,17 +21,17 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Recipe Finder"),
       ),
-      body: MianScreen(),
+      body: MainScreen(),
     );
   }
 }
 
-class MianScreen extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
-  _MianScreenState createState() => _MianScreenState();
+  _MainScreenState createState() => _MainScreenState();
 }
 
-class _MianScreenState extends State<MianScreen> {
+class _MainScreenState extends State<MainScreen> {
   int _itemCount = 0;
 
   var jsonResponse;
