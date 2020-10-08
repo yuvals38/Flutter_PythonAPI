@@ -1,4 +1,4 @@
-# Flutter with Python API 
+# Flutter with Python API (Flask)
 
 A simple Python API that is consumed by a Flutter application (Android and IOS).
 The API call is made to spoonacular API recipes.
