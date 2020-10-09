@@ -41,6 +41,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> getQuotes(query) async {
     String url = "http://10.0.2.2:5000/?query=$query";
     http.Response response = await http.get(url);
+
     var responsejson;
     if (response.statusCode == 200) {
       setState(() {
@@ -48,7 +49,6 @@ class _MainScreenState extends State<MainScreen> {
         jsonResponse = responsejson["results"];
 
         _itemCount = responsejson["results"].length;
-        //jsonResponse.length;
       });
 
       print("Number of recipes found : $_itemCount.");
