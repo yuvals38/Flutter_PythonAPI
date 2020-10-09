@@ -133,7 +133,7 @@ class _MianScreenState extends State<MianScreen> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text('Recipe Details'),
+                                          title: Text('Ingredients List'),
                                           content: setupAlertDialoadContainer(
                                               jsonResponse[index]
                                                   ["missedIngredientCount"],
