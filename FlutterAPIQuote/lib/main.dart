@@ -21,27 +21,25 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Recipe Finder"),
       ),
-      body: MainScreen(),
+      body: MianScreen(),
     );
   }
 }
 
-class MainScreen extends StatefulWidget {
+class MianScreen extends StatefulWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _MianScreenState createState() => _MianScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MianScreenState extends State<MianScreen> {
   int _itemCount = 0;
-
   var jsonResponse;
-
+  var jsonIngredients;
   String _Query;
 
   Future<void> getQuotes(query) async {
     String url = "http://10.0.2.2:5000/?query=$query";
     http.Response response = await http.get(url);
-
     var responsejson;
     if (response.statusCode == 200) {
       setState(() {
@@ -130,7 +128,20 @@ class _MainScreenState extends State<MainScreen> {
                                       color: Colors.black, fontSize: 18),
                                 ),
                               ),
-                              Image.network(jsonResponse[index]["image"]),
+                              InkWell(
+                                  onTap: () => showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Recipe Details'),
+                                          content: setupAlertDialoadContainer(
+                                              jsonResponse[index]
+                                                  ["missedIngredientCount"],
+                                              index),
+                                        );
+                                      }),
+                                  child: Image.network(
+                                      jsonResponse[index]["image"])),
                             ],
                           ),
                         );
@@ -141,6 +152,42 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget setupAlertDialoadContainer(int ingredientcount, int recipeIndex) {
+    return Container(
+      height: 600.0,
+      width: 400.0,
+      child: ingredientcount == 0
+          ? CircularProgressIndicator()
+          : ListView.builder(
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Center(
+                        child: Text(
+                          jsonResponse[recipeIndex]["missedIngredients"][index]
+                              ["original"],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black, fontSize: 18),
+                        ),
+                      ),
+                      Image.network(jsonResponse[recipeIndex]
+                          ["missedIngredients"][index]["image"]),
+                    ],
+                  ),
+                );
+              },
+              itemCount: ingredientcount,
+            ),
     );
   }
 }
