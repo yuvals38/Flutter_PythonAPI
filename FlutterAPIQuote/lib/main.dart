@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:flip_card/flip_card.dart';
 
 void main() => runApp(MyApp());
 
@@ -133,11 +134,15 @@ class _MianScreenState extends State<MianScreen> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text('Ingredients List'),
+                                          title: Text('Recipe & Ingredients'),
                                           content: setupAlertDialoadContainer(
                                               jsonResponse[index]
                                                   ["missedIngredientCount"],
-                                              index),
+                                              index,
+                                              jsonResponse[index][
+                                                          "analyzedInstructions"]
+                                                      [0]["steps"]
+                                                  .length),
                                         );
                                       }),
                                   child: Image.network(
@@ -155,39 +160,85 @@ class _MianScreenState extends State<MianScreen> {
     );
   }
 
-  Widget setupAlertDialoadContainer(int ingredientcount, int recipeIndex) {
-    return Container(
-      height: 600.0,
-      width: 400.0,
-      child: ingredientcount == 0
-          ? CircularProgressIndicator()
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Center(
-                        child: Text(
-                          jsonResponse[recipeIndex]["missedIngredients"][index]
-                              ["original"],
+  Widget setupAlertDialoadContainer(
+    int ingredientcount,
+    int ingredientIndex,
+    int recipeStepsCount,
+  ) {
+    return FlipCard(
+      direction: FlipDirection.HORIZONTAL, // default
+      front: Container(
+        height: 600.0,
+        width: 400.0,
+        child: ingredientcount == 0
+            ? CircularProgressIndicator()
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Center(
+                          child: Text(
+                            jsonResponse[ingredientIndex]["missedIngredients"]
+                                [index]["original"],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                        ),
+                        Image.network(jsonResponse[ingredientIndex]
+                            ["missedIngredients"][index]["image"]),
+                      ],
+                    ),
+                  );
+                },
+                itemCount: ingredientcount,
+              ),
+      ),
+      back: Container(
+        height: 600.0,
+        width: 400.0,
+        child: recipeStepsCount == 0
+            ? CircularProgressIndicator()
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Center(
+                          child: Text(
+                            jsonResponse[ingredientIndex]
+                                        ["analyzedInstructions"][0]["steps"]
+                                    [index]["number"]
+                                .toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                        ),
+                        Text(
+                          jsonResponse[ingredientIndex]["analyzedInstructions"]
+                              [0]["steps"][index]["step"],
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
-                      ),
-                      Image.network(jsonResponse[recipeIndex]
-                          ["missedIngredients"][index]["image"]),
-                    ],
-                  ),
-                );
-              },
-              itemCount: ingredientcount,
-            ),
+                      ],
+                    ),
+                  );
+                },
+                itemCount: recipeStepsCount,
+              ),
+      ),
     );
   }
 }

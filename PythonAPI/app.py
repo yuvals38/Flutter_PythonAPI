@@ -17,7 +17,7 @@ def API():
         else:
             pass
 
-        search = '&query=' + query + '&fillIngredients=true'
+        search = '&query=' + query + '&fillIngredients=true&addRecipeInformation=true'
         ready_uri = uri + search
         print(ready_uri)
         content = requests.get(ready_uri).content
