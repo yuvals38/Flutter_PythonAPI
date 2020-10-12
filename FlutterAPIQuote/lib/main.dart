@@ -49,7 +49,6 @@ class _MianScreenState extends State<MianScreen> {
 
         _itemCount = responsejson["results"].length;
       });
-
       print("Number of recipes found : $_itemCount.");
     } else {
       print("Request failed with status: ${response.statusCode}.");
