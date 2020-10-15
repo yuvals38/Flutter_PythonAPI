@@ -3,7 +3,7 @@ import requests
 import json
 
 app = Flask(__name__)
-
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 @app.route('/',methods=['GET'])
 def API():
